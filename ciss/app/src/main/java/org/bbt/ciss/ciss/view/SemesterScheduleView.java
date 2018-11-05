@@ -1,13 +1,16 @@
 package org.bbt.ciss.ciss.view;
 
 import android.annotation.TargetApi;
+import android.content.res.Resources;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Layout;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Display;
 import android.view.MenuItem;
 import android.view.View;
@@ -89,26 +92,25 @@ public class SemesterScheduleView extends AppCompatActivity implements BaseView 
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void addButton() {
-        LinearLayout linearLayout = findViewById(R.id.linearLayoutForButton);
+        LinearLayout linearLayout = findViewById(R.id.horizontalTitle);
         Button button = new Button(this);
         int wid = (int)(((double)getRealWidth())/15);
+        //Month Button
         ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(wid,90);
         button.setLayoutParams(layoutParams);
         linearLayout.addView(button);
-        
-        layoutParams.width=2*wid;
+        //Day Button
+        layoutParams = new ViewGroup.LayoutParams(wid*2,90);
         for(int i=0;i<7;++i){
             button = new Button(this);
             button.setLayoutParams(layoutParams);
             linearLayout.addView(button);
         }
-    
-        linearLayout = findViewById(R.id.linearLayoutForButton2);
-        Rect rect = new Rect();
-        getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
-        int he = (int)(((double)(rect.height()-layoutParams.height))/12);
+
+        //Time Button
+        linearLayout = findViewById(R.id.verticalTitle);
         layoutParams.width = wid;
-        layoutParams.height = he-24;
+        layoutParams.height = getContainerHeight()/12;
         for(int i=0;i<12;++i){
             button = new Button(this);
             button.setLayoutParams(layoutParams);
@@ -155,4 +157,33 @@ public class SemesterScheduleView extends AppCompatActivity implements BaseView 
         return dpi;
     }
 
+    private int getContainerHeight()
+    {
+        LinearLayout HorizontalTitle = findViewById(R.id.horizontalTitle);
+        android.support.design.widget.BottomNavigationView Navigation = findViewById(R.id.navigation);
+        Navigation.measure(0, 0);
+        HorizontalTitle.measure(0, 0);
+        return getRealHeight() - getStatusBarHeight() - 90 - Navigation.getMeasuredHeight() - getBottomStatusHeight();
+    }
+
+
+    private int getContainerWidth()
+    {
+        android.support.constraint.ConstraintLayout Container = findViewById(R.id.container);
+        return Container.getMeasuredWidth();
+    }
+
+    private int getStatusBarHeight() {
+        Resources resources = getResources();
+        int resourceId = resources.getIdentifier("status_bar_height", "dimen","android");
+        int statusBarHeight = resources.getDimensionPixelSize(resourceId);
+        return statusBarHeight;
+    }
+
+    private int getBottomStatusHeight()
+    {
+        WindowManager wm1 = this.getWindowManager();
+        int height = wm1.getDefaultDisplay().getHeight();
+        return getRealHeight()-height;
+    }
 }
