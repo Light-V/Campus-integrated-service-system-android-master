@@ -114,7 +114,12 @@ public class SemesterScheduleView extends AppCompatActivity implements BaseView 
         for(int i=0;i<12;++i){
             button = new Button(this);
             button.setLayoutParams(layoutParams);
+            button.setPadding(0,0,0,0);
             button.setText(String.valueOf(i+1));
+            Log.e("size",String.valueOf(button.getPaddingBottom()));
+            Log.e("size",String.valueOf(button.getPaddingTop()));
+            Log.e("size",String.valueOf(button.getPaddingLeft()));
+            Log.e("size",String.valueOf(button.getPaddingRight()));
             button.setTextSize(button.getTextSize()/3);
             linearLayout.addView(button);
         }
